@@ -24,7 +24,7 @@ angular.module('app', [
   $routeProvider
 
   .when('/login', {
-    templateUrl: 'templates/login.html',
+    templateUrl: '/mobile_app/templates/login.html',
     controller: 'loginCtrl',
     resolve: {
         checkRoute: checkRouteLogin
@@ -32,7 +32,7 @@ angular.module('app', [
   })
 
   .when('/windmill', {
-    templateUrl: 'templates/windmill.html',
+    templateUrl: '/mobile_app/templates/windmill.html',
     controller: 'windmillCtrl',
     resolve: {
         checkRoute: checkRouteWindmill

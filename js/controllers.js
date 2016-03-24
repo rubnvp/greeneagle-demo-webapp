@@ -88,7 +88,7 @@ angular.module('app.controllers', ['app.services'])
     $scope.activePower = 0;
     function setActivePower(windSpeed){
         var activePower = windSpeed <= 0 ? 0 : Math.log(windSpeed)*500;  
-        $scope.activePower = activePower.toFixed(2);
+        $scope.activePower = Math.floor(activePower);
     }
     
     $scope.windSpeedPercentage = 0;
