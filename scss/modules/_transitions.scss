@@ -1,0 +1,20 @@
+@mixin transition-intent(){
+  -webkit-transition: .2s linear .1s;
+  -moz-transition: .2s linear .1s;
+  -o-transition: .2s linear .1s;
+  transition: .2s linear .1s;
+}
+
+@mixin transition-slow(){
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}
+
+@mixin transition-normal(){
+  -webkit-transition: all .6s ease-in-out;
+  -moz-transition: all .6s ease-in-out;
+  -o-transition: all .6s ease-in-out;
+  transition: all .6s ease-in-out;
+}

@@ -1,0 +1,7 @@
+@mixin soft-shadow(){
+  box-shadow: 1px 2px 4px rgba(black, 0.2);
+}
+
+@mixin hard-shadow(){
+  box-shadow: 0px 2px 3px rgba(black, 0.4);
+}

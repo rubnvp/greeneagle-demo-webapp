@@ -1,0 +1,44 @@
+<div id="windmill" class="main-container">
+    <!-- Top content -->  
+    <div class="pull-top">
+        <div class="graphic-pane">
+            <img id="windmill-stick" src="/res/windmill-stick.svg">
+            <img id="windmill-rotor" src="/res/windmill-rotor.svg">
+        </div>
+        <div class="data-pane">
+            <div class="data-item">
+            <div class="data-title">
+                Active Power
+            </div>
+            <div class="data-number">
+                {{activePower}}<span class="small-text"> kW</span>
+            </div>
+            </div>
+            <div class="data-item">
+            <div class="data-title">
+                Wind Speed
+            </div>
+            <div class="data-number">
+                {{windSpeed}}<span class="small-text"> m/s</span>
+            </div>
+            </div>
+            <div class="data-item">
+            <div class="data-title">
+                Status
+            </div>
+            <div class="data-text {{status ? 'success' : 'error'}}">
+                {{status ? 'Enabled' : 'Disabled'}}
+            </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom content -->
+    <div class="pull-bottom">
+        <button class="button button-bar" ng-click="addWindSpeed(1)">
+            <span class="button-bar-progress"
+                  style="width: {{windSpeedPercentage}}%; background-color: {{barColor}}"></span>
+            <span class="button-bar-text">Increase Wind Speed</span>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,251 @@
+@import "modules/all";
+
+html, body{
+  border: 0px;
+  padding: 0px;
+  margin: 0px;
+  font-size: 18px;
+  line-height: 32px;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; 
+  user-select: none; 
+}
+body{
+  &.gray{
+    background-color: $bgGray;
+  }
+}
+
+.navbar{
+  position: fixed;
+  width: 100%;
+  height: $navbarHeight;
+  background-color: $themeColor;
+  color: $textWhite;
+  z-index: 1000;
+  @include hard-shadow();
+  .title{
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    padding: $navbarPadding 15px;
+    float: left;
+    max-width: 60vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .actions{
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 30px;
+    padding: $navbarPadding 15px;
+    float: right;
+    max-width: 40vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    form{
+      font-size: 0px;
+      line-height: 0px;
+      button{
+        font-family: 'Roboto', sans-serif;
+        height: 30px;
+        font-size: 14px;
+        font-weight: 700;
+        border: none;
+        border-radius: 5px;
+        color: $textWhite;
+        padding: 0px 5px;
+        text-transform: uppercase;
+        background: none;
+        &:focus{
+          outline: none;
+        }
+        &:hover, &:active{
+          background: darken($themeColor, 5%);
+        }
+      }
+    }
+  }
+}
+
+.main-container{
+  padding: 15px;
+  padding-top: 15px + $navbarHeight;
+  #logo{
+    width: 100%;
+    max-width: 400px;
+    @media(max-height: 300px){
+      display: none;
+    }
+  }
+  .pull-top{
+    position: absolute;
+    width: calc(100vw - 30px);
+    top: 15px + $navbarHeight;
+    height: 60vh;
+    margin-top: 5px;
+    .graphic-pane{
+      float: left;
+      position: relative;
+      img{
+        top: 0px;
+        left: 0px;
+        position: absolute;
+        &#windmill-stick{
+          height: 100%;
+        }
+        &#windmill-rotor{
+          height: 50%;
+          /*@include spin-animation();*/
+        }
+      }
+      @media(max-width: 449px){
+        width: 50%;
+        height: 270px;
+      }
+      @media(min-width: 450px){
+        width: 33.33%;
+        height: 170px;
+      }
+    }
+    .data-pane{
+      float: right;
+      color: $textMiddleGray;
+      font-size: 0px;
+      .data-item{
+        margin-bottom: 15px;
+        .data-title{
+          font-size: 16px;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+        }
+        .data-number{
+          font-size: 54px;
+          font-weight: 100;
+          margin-top: 10px;
+          .small-text{
+            font-size: 18px;
+            font-weight: 300;
+          }
+        }
+        .data-text{
+          margin-top: 5px;
+          text-transform: uppercase;
+          font-size: 32px;
+          font-weight: 300;
+          &.success{
+            color: $themeColor;
+          }
+          &.error{
+            color: $errorRed;
+          }
+        }
+      }
+      @media(max-width: 449px){
+        width: 50%;
+        .data-item{
+          width: 100%;
+        }
+      }
+      @media(min-width: 450px){
+        width: 66.67%;
+        .data-item{
+          display: inline-block;
+          width: 50%;
+        }
+      }
+    }
+  }
+  .pull-bottom{
+    position: absolute;
+    width: calc(100vw - 30px);
+    bottom: 15px;
+    .title{
+      color: $themeColor;
+      font-size: 20px;
+      line-height: 30px;
+      margin: 0px;
+      @media(max-height: 300px){
+        display: none;
+      }
+    }
+    .label{
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      color: $textMiddleGray;
+    }
+    .text-field{
+      font-family: 'Roboto', sans-serif;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 2px solid $lineGray;
+      border-radius: 0px;
+      width: 100%;
+      height: 50px;
+      font-size: 18px;
+      margin-bottom: 10px;
+      padding: 0px;
+      &:focus{
+        outline: none;
+        border-bottom-color: $themeColor;
+      }
+    }
+    .button{
+      font-family: 'Roboto', sans-serif;
+      width: 100%;
+      height: 50px;
+      background-color: $themeColor;
+      color: $textWhite;
+      font-weight: 700;
+      border: none;
+      border-radius: 0px;
+      font-size: 18px;
+      text-transform: uppercase;
+      @include soft-shadow();
+      &:disabled{
+        background-color: $disabledGray;
+      }
+      &:focus{
+        outline: none;
+      }
+      &:hover, &:active{
+        background-color: darken($themeColor, 5%);
+      }
+      &.button-bar{
+        background-color: $textMiddleGray;
+        position: relative;
+        &:hover, &:active{
+          background-color: darken($textMiddleGray, 5%);
+        }
+        .button-bar-progress{
+          position: absolute;
+          display: block;
+          top: 0px;
+          left: 0px;
+          height: 100%;
+          width: 50%;
+          background-color: $themeColor;
+        }
+        .button-bar-text{
+          position: absolute;
+          display: block;
+          top: 0px;
+          left: 0px;
+          height: 100%;
+          width: 100%;
+          text-align: center;
+          line-height: 50px;
+        }
+      }
+    }
+  }
+}

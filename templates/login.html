@@ -1,0 +1,11 @@
+<div id="login" class="main-container">    
+    <img id="logo" src="/res/logo.png">
+    <div class="pull-bottom">
+        <h1 class="title">Welcome!</h1>
+        <form>
+            <span class="label">Please fill in an username to start.</span>
+            <input type="text" class="text-field" placeholder="Username" ng-model="username">
+            <button class="button" ng-click="login()" ng-disabled="!enableLogin">Enter</button>
+        </form>
+    </div>
+</div>
