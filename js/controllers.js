@@ -67,20 +67,18 @@ angular.module('app.controllers', ['app.services'])
     $scope.$watch(enableLogin);
 })
 
-.controller('windmillCtrl', function($scope, $interval, lit, Navbar, Timers, User, CompactScada) {
+.controller('windmillCtrl', function($scope, $q, $interval, lit, Navbar, Timers, User, CompactScada) {
     Navbar.view('windmill');
     // signals
     $scope.windSpeed = User.getInitialWindSpeed() === undefined ? 0: User.getInitialWindSpeed();        
     
     function addWindSpeed(value) {
         var windSpeed = $scope.windSpeed;
-        if ($scope.status) {
-            if( value > 0) { // if we are adding
-                $scope.windSpeed =  windSpeed+value > lit.maxWindSpeed ? lit.maxWindSpeed : windSpeed + value;
-            }
-            else {          // if we are subtracting
-                $scope.windSpeed =  windSpeed+value < 0 ? 0 : windSpeed + value;
-            }
+        if( value > 0) { // if we are adding
+            $scope.windSpeed =  windSpeed+value > lit.maxWindSpeed ? lit.maxWindSpeed : windSpeed + value;
+        }
+        else {          // if we are subtracting
+            $scope.windSpeed =  windSpeed+value < 0 ? 0 : windSpeed + value;
         }
     }
     $scope.addWindSpeed = addWindSpeed;
@@ -113,24 +111,32 @@ angular.module('app.controllers', ['app.services'])
         rotation: "360deg", 
         ease: Power0.easeNone,
         repeat: -1
-    });  
+    });
+    tween.pause();
     
-    function setRotorSpeed(windSpeed, oldWindSpeed){
+    function setRotorSpeed(windSpeed){
         if (windSpeed === 0) tween.pause();
         else {
             var timeScale = windSpeed / lit.maxWindSpeed;
             tween.timeScale(timeScale);
-            if (oldWindSpeed === 0) tween.resume();
+            if (tween.paused()) tween.resume();
         }
     }
     
     // Watch windSpeed
-    $scope.$watch('windSpeed', function(windSpeed, oldWindSpeed){        
-        setActivePower(windSpeed);
+    function reactToWindspeed(windSpeed){
+        if ($scope.status) {
+            setActivePower(windSpeed);
+            setRotorSpeed(windSpeed);    
+        }
+        else {
+            setActivePower(0);
+            setRotorSpeed(0);
+        }
         setWindSpeedPercentage(windSpeed);
         setBarColor(windSpeed);
-        setRotorSpeed(windSpeed, oldWindSpeed);               
-    }, true);        
+    }
+    $scope.$watch('windSpeed', reactToWindspeed, true);        
     
     
     // Timers    
@@ -145,15 +151,18 @@ angular.module('app.controllers', ['app.services'])
     function updateSignals(){
         CompactScada.getStatus().then(function(status){
             $scope.status = status;
-            if (!status) $scope.windSpeed = 0;
+            if (status) {
+                return CompactScada.setWindSpeed($scope.windSpeed);
+            }
+            else {
+                reactToWindspeed($scope.windSpeed);
+                return $q.when();
+            }
+        }).then(function (result){
+            // do nothing
         }, function(error){
             console.error(error);
-        });
-        CompactScada.setWindSpeed($scope.windSpeed).then(function(result) {
-            // on success do nothing
-        }, function(error) {
-            console.error(error);
-        });
+        });        
     }
     Timers.addTimer(updateSignals, lit.updateSignalsInterval);
     updateSignals();
