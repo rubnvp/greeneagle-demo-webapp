@@ -15,7 +15,7 @@
     
     <!-- Navbar -->
     <div class="navbar"  ng-controller="navbarCtrl">
-        <div class="title">{{navbarTitle}}</div>
+        <div class="title" ng-bind="navbarTitle">Loading...</div>
         <div class="actions">
           <form>
             <button class="button" ng-show="logged" ng-click="logout()">Log out</button>
