@@ -120,7 +120,7 @@ angular.module('app.services', [])
                     Name: "WTG."+username+".Status",
                     Type: "BOOL",
                     InitialQuality : 0xC0,
-                    InitialValue: true
+                    InitialValue: false
                 },
             ];
             return CompactScadaAPI.createSignals(signals);

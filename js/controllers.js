@@ -81,7 +81,18 @@ angular.module('app.controllers', ['app.services'])
             $scope.windSpeed =  windSpeed+value < 0 ? 0 : windSpeed + value;
         }
     }
-    $scope.addWindSpeed = addWindSpeed;
+    
+    // difficult function = 1-sqrt(x)*x    
+    var y0 = 1;
+    var xMax = lit.maxWindSpeed + 7;
+    var escalatedXFactor = xMax / Math.pow(y0, 2/3);
+    
+    $scope.incrementWindSpeed = function() {
+        var x = $scope.windSpeed;
+        var escalatedX = x / escalatedXFactor;
+        var incrementValue = y0 - Math.sqrt(escalatedX) * (escalatedX)
+        addWindSpeed(incrementValue);
+    }
     
     $scope.activePower = 0;
     function setActivePower(windSpeed){
@@ -135,6 +146,7 @@ angular.module('app.controllers', ['app.services'])
         }
         setWindSpeedPercentage(windSpeed);
         setBarColor(windSpeed);
+        $scope.windSpeedFormated = Math.round(windSpeed);
     }
     $scope.$watch('windSpeed', reactToWindspeed, true);        
     
