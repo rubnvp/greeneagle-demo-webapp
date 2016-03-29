@@ -26,8 +26,8 @@
             <div class="data-title">
                 Status
             </div>
-            <div class="data-text {{status ? 'success' : 'error'}}">
-                {{status ? 'Enabled' : 'Disabled'}}
+            <div class="data-text {{status ? windSpeedFormated > 5 ? 'success' : 'warning' : 'error'}}">
+                {{status ? windSpeedFormated > 5 ? 'Running' : 'Low wind' : 'Disabled'}}
             </div>
             </div>
         </div>
