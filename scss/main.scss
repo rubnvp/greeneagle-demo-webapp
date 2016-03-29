@@ -146,6 +146,9 @@ body{
           &.error{
             color: $errorRed;
           }
+          &.warning{
+            color: $warningYellow;
+          }
         }
       }
       @media(max-width: 449px){
