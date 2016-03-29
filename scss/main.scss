@@ -146,6 +146,9 @@ body{
           &.error{
             color: $errorRed;
           }
+          &.warning{
+            color: $warningYellow;
+          }
         }
       }
       @media(max-width: 449px){
@@ -234,6 +237,7 @@ body{
           height: 100%;
           width: 50%;
           background-color: $themeColor;
+          @include transition-slow-linear();
         }
         .button-bar-text{
           position: absolute;
