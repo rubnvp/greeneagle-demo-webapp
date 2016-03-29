@@ -82,9 +82,10 @@ angular.module('app.controllers', ['app.services'])
         }
     }
     
-    // difficult function = 1-sqrt(x)*x    
+    // difficult function = 1-sqrt(x)*x
+    // x is windSpeed, y is value to increment windSpeed: https://www.google.es/webhp?q=1-sqrt(x+%2F+(32%2F1%5E(2%2F3))+)*(x+%2F+(+32%2F1%5E(2%2F3))+)   
     var y0 = 1;
-    var xMax = lit.maxWindSpeed + 7;
+    var xMax = lit.maxWindSpeed + 2;
     var escalatedXFactor = xMax / Math.pow(y0, 2/3);
     
     $scope.incrementWindSpeed = function() {
@@ -96,7 +97,7 @@ angular.module('app.controllers', ['app.services'])
     
     $scope.activePower = 0;
     function setActivePower(windSpeed){
-        var activePower = windSpeed <= 0 ? 0 : Math.log(windSpeed)*500;  
+        var activePower = windSpeed <= 0 ? 0 : Math.log(windSpeed+1)*500;  
         $scope.activePower = Math.floor(activePower);
     }
     
@@ -151,25 +152,14 @@ angular.module('app.controllers', ['app.services'])
     $scope.$watch('windSpeed', reactToWindspeed, true);        
     
     
-    // Timers    
-    
-    // Wind Speed decreaser
-    function decreaseWindSpeed(){
-        addWindSpeed(lit.decreaseValue);
-    }
-    Timers.addTimer(decreaseWindSpeed, lit.decreaseWindSpeedInterval);
+    // Timers        
     
     // Update signals
     function updateSignals(){
         CompactScada.getStatus().then(function(status){
             $scope.status = status;
-            if (status) {
-                return CompactScada.setWindSpeed($scope.windSpeed);
-            }
-            else {
-                reactToWindspeed($scope.windSpeed);
-                return $q.when();
-            }
+            if (!status) reactToWindspeed($scope.windSpeed);
+            return CompactScada.setWindSpeed($scope.windSpeed);
         }).then(function (result){
             // do nothing
         }, function(error){
@@ -178,6 +168,12 @@ angular.module('app.controllers', ['app.services'])
     }
     Timers.addTimer(updateSignals, lit.updateSignalsInterval);
     updateSignals();
+    
+    // Wind Speed decreaser
+    function decreaseWindSpeed(){
+        addWindSpeed(lit.decreaseValue);
+    }
+    Timers.addTimer(decreaseWindSpeed, lit.decreaseWindSpeedInterval);
 });
 
 })();
