@@ -12,6 +12,13 @@
   transition: all 1s ease-in-out;
 }
 
+@mixin transition-slow-linear(){
+  -webkit-transition: all 1s linear;
+  -moz-transition: all 1s linear;
+  -o-transition: all 1s linear;
+  transition: all 1s linear;
+}
+
 @mixin transition-normal(){
   -webkit-transition: all .6s ease-in-out;
   -moz-transition: all .6s ease-in-out;
