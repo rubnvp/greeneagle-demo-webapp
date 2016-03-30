@@ -51,7 +51,8 @@ angular.module('app.controllers', ['app.services'])
             console.log("User logged as "+username);
             $location.path("/windmill");
         }, function(error){
-            if (error = "User already exists.") alert("User already exists, try again.");
+            if (error === "User already exists.") alert("User already exists, please try again.");
+            else if (error === "An error has occurred") alert("An error has occurred, please try again.");
             else {
                 console.error(error);
             }
@@ -159,12 +160,19 @@ angular.module('app.controllers', ['app.services'])
         CompactScada.getStatus().then(function(status){
             $scope.status = status;
             if (!status) reactToWindspeed($scope.windSpeed);
-            return CompactScada.setWindSpeed($scope.windSpeed);
+            var signals = [{
+                id: 'WindSpeed',
+                value: $scope.windSpeed
+            },{
+                id: 'ActivePower',
+                value: $scope.activePower
+            }];
+            return CompactScada.setSignals(signals);
         }).then(function (result){
-            // do nothing
+            // console.log("WindSpeed and ActivePower settled");
         }, function(error){
             console.error(error);
-        });        
+        });
     }
     Timers.addTimer(updateSignals, lit.updateSignalsInterval);
     updateSignals();

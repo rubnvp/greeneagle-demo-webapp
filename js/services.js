@@ -109,24 +109,31 @@ angular.module('app.services', [])
         return checkUserExists(username)
         .then(function(user){
             if (user.exists) return $q.reject("User already exists."); // collision
-            var signals = [
-                {
-                    Name: "WTG."+username+".WindSpeed",
-                    Type: "DOUBLE",
-                    InitialQuality : 0xC0,
-                    InitialValue: 0
-                },  
-                {
-                    Name: "WTG."+username+".Status",
-                    Type: "BOOL",
-                    InitialQuality : 0xC0,
-                    InitialValue: false
-                },
-            ];
+            var signals = [{
+                Name: "WTG."+username+".WindSpeed",
+                Type: "DOUBLE",
+                InitialQuality : 0xC0,
+                InitialValue: 0
+            },{
+                Name: "WTG."+username+".ActivePower",
+                Type: "DOUBLE",
+                InitialQuality : 0xC0,
+                InitialValue: 0
+            },{
+                Name: "WTG."+username+".Status",
+                Type: "BOOL",
+                InitialQuality : 0xC0,
+                InitialValue: false
+            },{
+                Name: "WTG."+username+".Request",
+                Type: "BOOL",
+                InitialQuality : 0xC0,
+                InitialValue: false
+            }];
             return CompactScadaAPI.createSignals(signals);
         })
         .then(function(result){
-            if (result.data.WrittenItems !== 2) return $q.reject("An error has occurred, please try again.");
+            if (result.data.WrittenItems !== 4) return $q.reject("An error has occurred");
             return $q.when(username);
         });
     }
@@ -158,12 +165,13 @@ angular.module('app.services', [])
         });
     }
     
-    function setSignal(username, signal, value){
-        var finalSignal = baseSignal+'.'+username+'.'+signal;
-        var jsonPost = [{
-            Name: finalSignal,
-            Value: value
-        }];
+    function setSignals(username, signals, value){
+        var jsonPost = signals.map(function(signal){
+            return {
+                Name: baseSignal+'.'+username+'.'+signal.id,
+                Value: signal.value
+            }
+        });
         return $http.post(lit.baseUrl+'/item', jsonPost);
     }
     
@@ -178,7 +186,7 @@ angular.module('app.services', [])
     
     var Service = {
         getSignal: getSignal,
-        setSignal: setSignal,
+        setSignals: setSignals,
         createSignals: createSignals,
         deleteSignals: deleteSignals
     };     
@@ -195,9 +203,9 @@ angular.module('app.services', [])
         }        
     }        
     
-    function setWindSpeed(windSpeed){
-        if ( User.isLogged() ) {
-            return CompactScadaAPI.setSignal(User.getUsername(), 'WindSpeed', windSpeed);
+    function setSignals(signals){
+        if ( User.isLogged() ) {            
+            return CompactScadaAPI.setSignals(User.getUsername(), signals);
         }
         else {
             return $q.reject("User not logged.");
@@ -206,7 +214,7 @@ angular.module('app.services', [])
     
     var Service = {
         getStatus: getStatus,
-        setWindSpeed: setWindSpeed
+        setSignals: setSignals
     };     
     return Service;
 })
