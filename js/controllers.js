@@ -127,10 +127,11 @@ angular.module('app.controllers', ['app.services'])
     });
     tween.pause();
     
-    function setRotorSpeed(windSpeed){
-        if (windSpeed === 0) tween.pause();
+    var maxActivePower = Math.log(lit.maxWindSpeed+1)*500;
+    function setRotorSpeed(activePower){
+        if (activePower === 0) tween.pause();
         else {
-            var timeScale = windSpeed / lit.maxWindSpeed;
+            var timeScale = activePower / maxActivePower;
             tween.timeScale(timeScale);
             if (tween.paused()) tween.resume();
         }
@@ -138,14 +139,6 @@ angular.module('app.controllers', ['app.services'])
     
     // Watch windSpeed
     function reactToWindspeed(windSpeed){
-        if ($scope.status) {
-            //setActivePower(windSpeed);
-            setRotorSpeed(windSpeed);    
-        }
-        else {
-            //setActivePower(0);
-            setRotorSpeed(0);
-        }
         setWindSpeedPercentage(windSpeed);
         setBarColor(windSpeed);
         $scope.windSpeedFormated = Math.round(windSpeed);
@@ -155,15 +148,22 @@ angular.module('app.controllers', ['app.services'])
     
     // Timers
     
-    // Calculate Active Power 
-    function calculateActivePower() {
-        var current = $scope.activePower;
+    // Calculate Active Power
+    function getActivePower(activePower){
+        var current = activePower;
         var windSpeed = $scope.windSpeed;
         var target = windSpeed <= 0 ? 0 : Math.log(windSpeed+1)*500;
         
-        var distance = target - current;
-        var calculated = distance > 1 ? current + (distance/10) : target;
+        var distance = target - current;        
+        var calculated = Math.abs(distance) > 50 ? current + (distance/2) : target;
         
+        return calculated;
+    }
+    
+    function calculateActivePower() {
+        var activePower = $scope.activePower;
+        var calculated = getActivePower(activePower);
+        //console.log("current: "+activePower+" - new: "+calculated);
         $scope.activePower = Math.floor(calculated);
     }     
     Timers.addTimer(calculateActivePower, lit.updateActivePowerInterval);
@@ -194,6 +194,7 @@ angular.module('app.controllers', ['app.services'])
     // Wind Speed decreaser
     function decreaseWindSpeed(){
         addWindSpeed(lit.decreaseValue);
+        setRotorSpeed(getActivePower($scope.activePower));
     }
     Timers.addTimer(decreaseWindSpeed, lit.decreaseWindSpeedInterval);
 });
