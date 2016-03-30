@@ -97,10 +97,10 @@ angular.module('app.controllers', ['app.services'])
     }
     
     $scope.activePower = 0;
-    function setActivePower(windSpeed){
-        var activePower = windSpeed <= 0 ? 0 : Math.log(windSpeed+1)*500;  
-        $scope.activePower = Math.floor(activePower);
-    }
+    // function setActivePower(windSpeed){
+    //     var activePower = windSpeed <= 0 ? 0 : Math.log(windSpeed+1)*500;  
+    //     $scope.activePower = Math.floor(activePower);
+    // }
     
     $scope.windSpeedPercentage = 0;
     function setWindSpeedPercentage(windSpeed){
@@ -139,11 +139,11 @@ angular.module('app.controllers', ['app.services'])
     // Watch windSpeed
     function reactToWindspeed(windSpeed){
         if ($scope.status) {
-            setActivePower(windSpeed);
+            //setActivePower(windSpeed);
             setRotorSpeed(windSpeed);    
         }
         else {
-            setActivePower(0);
+            //setActivePower(0);
             setRotorSpeed(0);
         }
         setWindSpeedPercentage(windSpeed);
@@ -153,7 +153,21 @@ angular.module('app.controllers', ['app.services'])
     $scope.$watch('windSpeed', reactToWindspeed, true);        
     
     
-    // Timers        
+    // Timers
+    
+    // Calculate Active Power 
+    function calculateActivePower() {
+        var current = $scope.activePower;
+        var windSpeed = $scope.windSpeed;
+        var target = windSpeed <= 0 ? 0 : Math.log(windSpeed+1)*500;
+        
+        var distance = target - current;
+        var calculated = distance > 1 ? current + (distance/10) : target;
+        
+        $scope.activePower = Math.floor(calculated);
+    }     
+    Timers.addTimer(calculateActivePower, lit.updateActivePowerInterval);
+    calculateActivePower();
     
     // Update signals
     function updateSignals(){
