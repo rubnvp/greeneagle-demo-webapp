@@ -151,11 +151,13 @@ angular.module('app.controllers', ['app.services'])
     // Calculate Active Power
     function getActivePower(activePower){
         var current = activePower;
-        var windSpeed = $scope.windSpeed;
+        var windSpeed = $scope.status ? $scope.windSpeed : 0;
         var target = windSpeed <= 0 ? 0 : Math.log(windSpeed+1)*500;
         
         var distance = target - current;        
-        var calculated = Math.abs(distance) > 50 ? current + (distance/2) : target;
+        var calculated = current + (distance/4); 
+        //calculated = Math.abs(calculated-current) < 50 ? target : calculated; 
+        calculated = Math.abs(distance) > 50 ? calculated : target; 
         
         return calculated;
     }
@@ -165,6 +167,7 @@ angular.module('app.controllers', ['app.services'])
         var calculated = getActivePower(activePower);
         //console.log("current: "+activePower+" - new: "+calculated);
         $scope.activePower = Math.floor(calculated);
+        setRotorSpeed(calculated);
     }     
     Timers.addTimer(calculateActivePower, lit.updateActivePowerInterval);
     calculateActivePower();
@@ -173,7 +176,7 @@ angular.module('app.controllers', ['app.services'])
     function updateSignals(){
         CompactScada.getStatus().then(function(status){
             $scope.status = status;
-            if (!status) reactToWindspeed($scope.windSpeed);
+            //if (!status) reactToWindspeed($scope.windSpeed);
             var signals = [{
                 id: 'WindSpeed',
                 value: $scope.windSpeed
@@ -194,7 +197,9 @@ angular.module('app.controllers', ['app.services'])
     // Wind Speed decreaser
     function decreaseWindSpeed(){
         addWindSpeed(lit.decreaseValue);
-        setRotorSpeed(getActivePower($scope.activePower));
+        
+        // var equivalentActivePower = Math.exp($scope.windSpeed/500) - 1;
+        // setRotorSpeed(getActivePower(equivalentActivePower));
     }
     Timers.addTimer(decreaseWindSpeed, lit.decreaseWindSpeedInterval);
 });

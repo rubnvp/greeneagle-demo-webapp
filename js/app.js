@@ -13,7 +13,7 @@ angular.module('app', [
     decreaseWindSpeedInterval: 1000,
     decreaseValue: -2,
     // activePower value follow windSpeed interval
-    updateActivePowerInterval: 3000,
+    updateActivePowerInterval: 1000,
     // Windmill rotation animation
     maxWindmillRotationPeriod: 0.75,
     // CompactCADA reference url
