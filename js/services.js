@@ -123,12 +123,12 @@ angular.module('app.services', [])
                 Name: "WTG."+username+".Status",
                 Type: "BOOL",
                 InitialQuality : 0xC0,
-                InitialValue: false
+                InitialValue: true
             },{
                 Name: "WTG."+username+".Request",
                 Type: "BOOL",
                 InitialQuality : 0xC0,
-                InitialValue: false
+                InitialValue: true
             }];
             return CompactScadaAPI.createSignals(signals);
         })
