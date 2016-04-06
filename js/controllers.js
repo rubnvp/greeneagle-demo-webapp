@@ -45,18 +45,27 @@ angular.module('app.controllers', ['app.services'])
 
     $scope.username =  undefined;
     
+    var enableLoginButton = true;
+    
     $scope.login = function() {
-        User.login($scope.username)
-        .then(function(username){
-            console.log("User logged as "+username);
-            $location.path("/windmill");
-        }, function(error){
-            if (error === "User already exists.") alert("User already exists, please try again.");
-            else if (error === "An error has occurred") alert("An error has occurred, please try again.");
-            else {
-                console.error(error);
-            }
-        });
+        if (enableLoginButton){
+            enableLoginButton = false;              
+            User.login($scope.username)
+            .then(function(username){
+                console.log("User logged as "+username);
+                $location.path("/windmill");
+                
+                enableLoginButton = true;
+                
+            }, function(error){
+                if (error === "User already exists.") alert("User already exists, please try again.");
+                else if (error === "An error has occurred") alert("An error has occurred, please try again.");
+                else {
+                    console.error(error);
+                }
+                enableLoginButton = true;
+            });
+        }
     }
     
     $scope.enableLogin = false;
@@ -92,8 +101,28 @@ angular.module('app.controllers', ['app.services'])
     $scope.incrementWindSpeed = function() {
         var x = $scope.windSpeed;
         var escalatedX = x / escalatedXFactor;
-        var incrementValue = y0 - Math.sqrt(escalatedX) * (escalatedX)
+        var incrementValue = y0 - Math.sqrt(escalatedX) * (escalatedX);
+        
+        if (x === 0) incrementValue = 5; // fix for some iphones
+        
         addWindSpeed(incrementValue);
+        
+        //----------------------------------------------------
+        
+        var signals = [{
+            id: 'WindSpeed',
+            value: $scope.windSpeed
+        },{
+            id: 'ActivePower',
+            value: $scope.activePower
+        }];
+        
+        CompactScada.setSignals(signals).then(function (result){
+            // console.log("WindSpeed and ActivePower settled");
+        }, function(error){
+            console.error(error);
+        });        
+        
     }
     
     $scope.activePower = 0;
@@ -174,6 +203,13 @@ angular.module('app.controllers', ['app.services'])
     
     // Update signals
     function updateSignals(){
+        
+        // CompactScada.getStatus().then(function(status){
+        //     $scope.status = status;
+        // }, function(error){
+        //     console.error(error);
+        // });
+        
         CompactScada.getStatus().then(function(status){
             $scope.status = status;
             //if (!status) reactToWindspeed($scope.windSpeed);

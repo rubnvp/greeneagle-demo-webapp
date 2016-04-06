@@ -139,7 +139,12 @@ angular.module('app.services', [])
     }
     
     function logout(username){
-        var signals = ["WTG."+username+".WindSpeed", "WTG."+username+".Status"];
+        var signals = [
+            "WTG."+username+".WindSpeed",
+            "WTG."+username+".ActivePower",
+            "WTG."+username+".Status",
+            "WTG."+username+".Request",
+        ];
         return CompactScadaAPI.deleteSignals(signals)
         .then(function(){
             return $q.when(username);
